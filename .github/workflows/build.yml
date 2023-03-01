@@ -1,0 +1,82 @@
+name: Test and Build JS App
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+    paths-ignore:
+      - "./.gitignore"
+      - "./.github/*"
+      - "./.eslintrc"
+      - "./.eslintignore"
+
+jobs:
+  test_App:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v3
+
+      - name: Cache Install
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ hashFiles('**/package-lock.json') }} - cashes
+
+      - name: Install dependecies
+        run: npm ci
+
+      - name: Test application
+        run: npm run test
+
+  lint_App:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v3
+
+      - name: Cache Install
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ hashFiles('**/package-lock.json') }} - cashes
+
+      - name: Install dependecies
+        run: npm ci
+
+      - name: Lint application
+        run: npm run lint
+
+  build_App:
+    needs: [lint_App, test_App]
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Install
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ hashFiles('**/package-lock.json') }} - cashes
+
+      - name: Install dependecies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build

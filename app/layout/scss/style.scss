@@ -1,0 +1,16 @@
+@import "./utils/libs";
+@import "./utils/fonts";
+@import "./utils/vars";
+@import "./global/global";
+@import "./global/animation";
+
+//? Компоненты
+@import "../../js/components/dashboard/dashboard.scss";
+//?----------------
+
+.content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+@import "./global/media";
