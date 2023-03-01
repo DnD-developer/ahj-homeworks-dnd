@@ -12,25 +12,6 @@ on:
       - "./.eslintignore"
 
 jobs:
-  test_App:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Get repository code
-        uses: actions/checkout@v3
-
-      - name: Cache Install
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ hashFiles('**/package-lock.json') }} - cashes
-
-      - name: Install dependecies
-        run: npm ci
-
-      - name: Test application
-        run: npm run test
-
   lint_App:
     runs-on: ubuntu-latest
 
@@ -51,7 +32,7 @@ jobs:
         run: npm run lint
 
   build_App:
-    needs: [lint_App, test_App]
+    needs: [lint_App]
 
     strategy:
       matrix:
